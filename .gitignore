@@ -1,70 +1,53 @@
-# ===========================
 # Python
-# ===========================
 __pycache__/
 *.py[cod]
 *$py.class
-*.pyo
-*.pyd
-.Python
 *.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
 
-# ===========================
-# Virtual Environments
-# ===========================
+# Virtual Environment
 venv/
-oldenv/
 env/
 ENV/
-.venv/
+Loloenv/
 
-# ===========================
+# Node.js
+node_modules/
+frontend/build/
+
 # Django
-# ===========================
-db.sqlite3
-db.sqlite3-journal
 *.log
 local_settings.py
-staticfiles/
-static_root/
+db.sqlite3
+db.sqlite3-journal
+/media
+/staticfiles
 
-# ===========================
-# Media files (user uploads)
-# ===========================
-media/
-
-# ===========================
-# Environment Variables
-# ===========================
+# Environment variables
 .env
-.env.local
-.env.production
-*.env
 
-# ===========================
-# IDE & Editors
-# ===========================
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# ===========================
-# OS Files
-# ===========================
+# OS
 .DS_Store
-.DS_Store?
-._*
 Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# ===========================
-# Distribution / Packaging
-# ===========================
-dist/
-build/
-*.egg-info/
-*.egg
-MANIFEST
