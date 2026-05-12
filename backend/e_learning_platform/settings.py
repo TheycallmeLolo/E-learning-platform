@@ -15,10 +15,10 @@ For media files in development, Django will serve them via MEDIA_URL.
 from dotenv import load_dotenv
 load_dotenv()
 
-
 from pathlib import Path
 import os
 from decouple import config
+API_KEY = os.getenv('GEMINI_API_KEY')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'accounts',
     'courses',
     'payments',
+    'experiences',
+    'focus',
     # Token blacklist - depends on accounts.User
     'rest_framework_simplejwt.token_blacklist',
     'notifications',
@@ -106,7 +108,7 @@ EMAIL_HOST_USER = os.environ.get('USER_EMAIL')      # من .env
 # EMAIL_HOST_PASSWORD = os.environ.get('USER_PASSWORD')  # من .env
 DEFAULT_FROM_EMAIL = f"EduPlatform <{os.environ.get('USER_EMAIL')}>"
 FRONTEND_URL       = 'http://localhost:3000'
-EMAIL_HOST_PASSWORD = 'ckas hyui ijzg afbk' 
+EMAIL_HOST_PASSWORD = 'mgam uknn gigi jzxf' 
 # ckas hyui ijzg afbk
 # DATABASES = {
 #     'default': {
@@ -172,14 +174,14 @@ REST_FRAMEWORK = {
         'rest_framework.filters.SearchFilter',
     ],
     # Rate limiting - configure limits for production
-    # 'DEFAULT_THROTTLE_CLASSES': [
-    #     'rest_framework.throttling.AnonRateThrottle',
-    #     'rest_framework.throttling.UserRateThrottle'
-    # ],
-    # 'DEFAULT_THROTTLE_RATES': {
-    #     'anon': '100/hour',
-    #     'user': '1000/hour'
-    # }
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '1000/hour',
+        'user': '5000/hour'
+    }
 }
 
 # Simple JWT
@@ -228,3 +230,4 @@ AWS_S3_CUSTOM_DOMAIN  = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amaz
 
 # Videos are stored as PRIVATE objects – access is always via presigned URLs.
 # Do NOT set AWS_DEFAULT_ACL = 'public-read' for the video bucket.
+X_FRAME_OPTIONS = 'SAMEORIGIN'

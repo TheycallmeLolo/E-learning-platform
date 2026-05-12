@@ -192,13 +192,22 @@ Log in with the superuser account you created.
 
 ---
 
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+
 ## 👨‍💻 Author
 
 **Ali (Lolo)**
 GitHub: [TheycallmeLolo](https://github.com/TheycallmeLolo)
+<<<<<<< HEAD
 
 ---
 
 ## 📄 License
 
 This project is licensed under the MIT License.
+

@@ -1,0 +1,272 @@
+/* src/pages/InstructorDetail.css */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600&display=swap');
+
+:root {
+  --idet-bg:      #0a0a0f;
+  --idet-surface: #111118;
+  --idet-card:    #16161f;
+  --idet-border:  #2a2a38;
+  --idet-accent:  #c8973a;
+  --idet-blue:    #4a7fa5;
+  --idet-text:    #e8e8f0;
+  --idet-muted:   #8888a0;
+}
+
+.idet-page {
+  min-height: 100vh;
+  background: var(--idet-bg);
+  color: var(--idet-text);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  direction: rtl;
+}
+
+/* Loading */
+.idet-loading {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 60vh; flex-direction: column; gap: 1rem; color: var(--idet-muted);
+}
+.idet-loading__spinner {
+  width: 36px; height: 36px;
+  border: 2px solid var(--idet-border);
+  border-top-color: var(--idet-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Header */
+.idet-header {
+  background: var(--idet-surface);
+  border-bottom: 1px solid var(--idet-border);
+  padding: 2rem 0 0;
+}
+.idet-header__inner {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+.idet-back {
+  display: inline-block;
+  color: var(--idet-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  margin-bottom: 2rem;
+  transition: color 0.2s;
+}
+.idet-back:hover { color: var(--idet-accent); }
+
+/* Profile */
+.idet-profile {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-bottom: 2.5rem;
+}
+.idet-profile__avatar {
+  flex-shrink: 0;
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--idet-accent), var(--idet-blue));
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 2.2rem; font-weight: 700; color: #000;
+  position: relative;
+  border: 3px solid var(--idet-border);
+}
+.idet-profile__avatar img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.idet-featured-badge {
+  position: absolute;
+  bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--idet-accent);
+  color: #000;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+
+.idet-profile__info { flex: 1; }
+.idet-profile__label {
+  font-size: 0.7rem;
+  color: var(--idet-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  display: block;
+  margin-bottom: 0.3rem;
+}
+.idet-profile__name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 900;
+  color: #fff;
+  margin: 0 0 0.4rem;
+}
+.idet-profile__dept { font-size: 0.9rem; color: var(--idet-muted); margin: 0 0 0.2rem; }
+.idet-profile__uni { font-size: 0.85rem; color: var(--idet-blue); margin: 0 0 1rem; }
+
+.idet-tag {
+  display: inline-block;
+  background: rgba(74,127,165,0.15);
+  border: 1px solid rgba(74,127,165,0.3);
+  color: var(--idet-blue);
+  font-size: 0.72rem;
+  padding: 3px 8px;
+  border-radius: 2px;
+  margin: 2px;
+}
+.idet-profile__tags { margin-bottom: 1.25rem; }
+
+.idet-profile__stats {
+  display: flex; gap: 2rem; margin-bottom: 1.25rem; flex-wrap: wrap;
+}
+.idet-stat { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.idet-stat strong {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.6rem; color: var(--idet-accent);
+}
+.idet-stat span { font-size: 0.72rem; color: var(--idet-muted); }
+
+.idet-profile__links { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.idet-link {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 2px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid;
+  transition: opacity 0.2s;
+}
+.idet-link:hover { opacity: 0.8; }
+.idet-link--li  { border-color: #0077b5; color: #0077b5; }
+.idet-link--gs  { border-color: #4285f4; color: #4285f4; }
+.idet-link--rg  { border-color: #00ccbb; color: #00ccbb; }
+.idet-link--cv  { background: var(--idet-accent); border-color: var(--idet-accent); color: #000; }
+
+/* Tabs */
+.idet-tabs {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--idet-border);
+  margin-top: 1rem;
+}
+.idet-tab {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--idet-muted);
+  font-family: 'IBM Plex Sans Arabic', sans-serif;
+  font-size: 0.88rem;
+  padding: 0.9rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+}
+.idet-tab:hover { color: var(--idet-text); }
+.idet-tab--active {
+  color: var(--idet-accent);
+  border-bottom-color: var(--idet-accent);
+  font-weight: 600;
+}
+
+/* Content */
+.idet-content { padding: 3rem 0; }
+.idet-content__inner { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
+
+.idet-about h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.3rem;
+  color: #fff;
+  margin: 0 0 1rem;
+  border-bottom: 1px solid var(--idet-border);
+  padding-bottom: 0.75rem;
+}
+.idet-about p {
+  color: var(--idet-muted);
+  line-height: 1.9;
+  font-size: 0.95rem;
+}
+.idet-info-block {
+  background: var(--idet-card);
+  border: 1px solid var(--idet-border);
+  border-radius: 4px;
+  padding: 1.25rem;
+  margin-top: 1.5rem;
+}
+.idet-info-block h3 {
+  font-size: 0.8rem;
+  color: var(--idet-accent);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.5rem;
+}
+.idet-info-block p { color: var(--idet-text); font-size: 0.9rem; margin: 0; }
+
+/* Courses tab */
+.idet-courses__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+.idet-course-card {
+  background: var(--idet-card);
+  border: 1px solid var(--idet-border);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+.idet-course-card:hover {
+  border-color: var(--idet-blue);
+  transform: translateY(-2px);
+}
+.idet-course-card__img {
+  height: 120px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+  overflow: hidden;
+}
+.idet-course-card__img img { width: 100%; height: 100%; object-fit: cover; }
+.idet-course-card__body { padding: 1rem; }
+.idet-course-card__body h3 { font-size: 0.9rem; color: #fff; margin: 0 0 0.4rem; }
+.idet-course-card__price { font-size: 0.82rem; color: var(--idet-accent); font-weight: 600; margin: 0; }
+
+/* Contact tab */
+.idet-contact__links { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+.idet-contact-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 2px;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 1px solid var(--idet-border);
+  color: var(--idet-text);
+  transition: all 0.2s;
+}
+.idet-contact-btn:hover { border-color: var(--idet-blue); color: var(--idet-blue); }
+.idet-contact-btn--gold {
+  background: var(--idet-accent);
+  border-color: var(--idet-accent);
+  color: #000;
+}
+.idet-contact-btn--gold:hover { opacity: 0.85; color: #000; }
+
+.idet-empty { color: var(--idet-muted); font-size: 0.9rem; }
+
+@media (max-width: 600px) {
+  .idet-profile { flex-direction: column; align-items: center; text-align: center; }
+  .idet-profile__stats { justify-content: center; }
+  .idet-profile__links { justify-content: center; }
+  .idet-tabs { overflow-x: auto; }
+  .idet-tab { padding: 0.9rem 1rem; font-size: 0.82rem; white-space: nowrap; }
+}
+
+

@@ -69,6 +69,10 @@ const Header = () => {
           <Link to="/courses" className={`nav-link ${isActive('/courses') ? 'active' : ''}`}>
             Courses
           </Link>
+          {/* إضافة الرابط هنا */}
+          <Link to="/experiences" className={`nav-link ${isActive('/experiences') ? 'active' : ''}`}>
+            Experiences 
+          </Link>
           {isAuthenticated && (
             <>
               {user?.is_instructor ? (
@@ -82,6 +86,12 @@ const Header = () => {
               )}
             </>
           )}
+          {/* إضافة هذا الجزء: يظهر فقط للمدرسين */}
+          {isAuthenticated && user?.is_instructor && (
+           <Link to="/experiences/create" className={`nav-link ${isActive('/experiences/create') ? 'active' : ''}`}>
+             Add Experience
+           </Link>
+         )}
         </nav>
 
         {/* Right side */}
@@ -136,7 +146,7 @@ const Header = () => {
                       </svg>
                       Profile
                     </Link>
-
+                    
                     {user?.is_instructor ? (
                       <Link to="/dashboard/instructor" className="dropdown-item">
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -190,6 +200,8 @@ const Header = () => {
       {/* Mobile Menu */}
       <div className={`mobile-menu ${mobileOpen ? 'open' : ''}`}>
         <Link to="/courses" className="mobile-link">Courses</Link>
+        {/* إضافة الرابط هنا للموبايل */}
+        <Link to="/experiences" className="mobile-link">Experiences</Link>
         {isAuthenticated ? (
           <>
             {user?.is_instructor ? (

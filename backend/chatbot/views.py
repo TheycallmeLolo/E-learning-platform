@@ -80,7 +80,7 @@ class ChatbotView(APIView):
             last_message = messages_data[-1]["content"]
 
             chat = client.chats.create(
-                model="gemini-2.0-flash",
+                model="gemini-2.0-flash-lite",
                 config=types.GenerateContentConfig(
                     system_instruction=system_prompt,
                     max_output_tokens=1024,

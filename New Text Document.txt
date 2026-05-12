@@ -1,0 +1,8 @@
+### Model Relationships
+- User → StudentProfile (OneToOne)
+- User → InstructorProfile (OneToOne)
+- User → Course (ForeignKey, instructor)
+- Course → Section (ForeignKey)
+- Section → Lecture (ForeignKey)
+- User → Enrollment (ForeignKey, student)
+- Course → Enrollment (ForeignKey)

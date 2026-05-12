@@ -72,13 +72,12 @@ const LectureForm = ({ sectionId, lectureCount, onSaved }) => {
       <input style={s.input} value={lec.title} placeholder="مثال: مقدمة عن الوحدة"
         onChange={e => update('title', e.target.value)} />
 
-      <label style={s.label}>نوع المحتوى</label>
-      <select style={s.input} value={lec.video_type}
-        onChange={e => update('video_type', e.target.value)}>
-        <option value="upload">🎬 رفع فيديو على S3</option>
-        <option value="youtube">▶ رابط YouTube</option>
-        <option value="vimeo">▶ رابط Vimeo</option>
+      <select style={s.input} value={lec.video_type} onChange={e => update('video_type', e.target.value)}>
+        <option value="upload" style={{ backgroundColor: '#fff', color: '#000' }}>🎬 رفع فيديو على S3</option>
+        <option value="youtube" style={{ backgroundColor: '#ff0000', color: '#fff' }}>▶ رابط YouTube</option>
+        <option value="vimeo" style={{ backgroundColor: '#1ab7ea', color: '#fff' }}>▶ رابط Vimeo</option>
       </select>
+
 
       {lec.video_type === 'upload' ? (
         <div style={s.uploadBox}>

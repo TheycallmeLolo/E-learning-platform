@@ -31,8 +31,15 @@ urlpatterns = [
     path('api/enrollments/', include('payments.urls')),
     path('api/notifications/', include('notifications.urls')),
     path('api/chatbot/', include('chatbot.urls')),
+    path('api/experiences/', include('experiences.urls')),
+    path('api/focus/', include('focus.urls')),
 ]
 
 # Serve media files in development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
