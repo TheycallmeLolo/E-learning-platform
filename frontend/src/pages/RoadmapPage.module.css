@@ -1,0 +1,416 @@
+/* src/pages/RoadmapPage.module.css */
+
+/* ── Page wrapper ─────────────────────────────────────────── */
+.page {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  font-family: inherit;
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 1.5rem;
+}
+
+.tab {
+  padding: 10px 18px;
+  font-size: 14px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  color: #6b7280;
+  font-family: inherit;
+  transition: color 0.15s;
+}
+
+.tab:hover { color: #111827; }
+
+.tabActive {
+  color: #111827;
+  border-bottom-color: #111827;
+  font-weight: 600;
+}
+
+/* ── Track grid ───────────────────────────────────────────── */
+.selectHint {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 1rem;
+}
+
+.trackGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+  gap: 12px;
+}
+
+.trackCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  background: #fff;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  text-align: right;
+  transition: border-color 0.15s, transform 0.1s;
+  font-family: inherit;
+}
+
+.trackCard:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+
+.trackIcon { font-size: 26px; }
+.trackName { font-size: 14px; font-weight: 600; color: #111827; }
+.trackSub  { font-size: 11px; color: #9ca3af; }
+.trackCount { font-size: 12px; color: #6b7280; margin-top: 4px; }
+
+.miniProgress {
+  width: 100%;
+  height: 4px;
+  background: #f3f4f6;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.miniBar {
+  height: 4px;
+  border-radius: 99px;
+  transition: width 0.4s;
+}
+
+/* ── Roadmap view ─────────────────────────────────────────── */
+.rmView { display: flex; flex-direction: column; gap: 0; }
+
+.rmHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 1.25rem;
+}
+
+.backBtn {
+  padding: 7px 14px;
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  color: #374151;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.backBtn:hover { background: #f9fafb; }
+
+.rmTitle {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* ── Top bar: avatar + progress ───────────────────────────── */
+.topBar {
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.avatarArea { display: flex; flex-direction: column; gap: 8px; align-items: center; }
+
+.avatarImg {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #e5e7eb;
+}
+
+.avatarEmoji {
+  font-size: 44px;
+  line-height: 1;
+  width: 52px;
+  text-align: center;
+}
+
+.avatarPicker {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  max-width: 180px;
+}
+
+.avatarBtn {
+  width: 30px;
+  height: 30px;
+  font-size: 18px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 50%;
+  background: #f9fafb;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.15s;
+}
+
+.avatarBtnActive { border-color: #3b82f6; background: #eff6ff; }
+.avatarBtn:hover { border-color: #9ca3af; }
+
+.uploadBtn {
+  width: 30px;
+  height: 30px;
+  border: 1.5px dashed #d1d5db;
+  border-radius: 50%;
+  background: #f9fafb;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.progressArea { flex: 1; min-width: 180px; }
+.progressLabel { font-size: 13px; color: #6b7280; margin-bottom: 8px; }
+
+.progressTrack {
+  height: 8px;
+  background: #f3f4f6;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 8px;
+  border-radius: 99px;
+  transition: width 0.5s ease;
+}
+
+/* ── Path / nodes ─────────────────────────────────────────── */
+.path { display: flex; flex-direction: column; }
+
+.node { display: flex; align-items: stretch; gap: 0; }
+
+.lineWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 38px;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #6b7280;
+  flex-shrink: 0;
+  margin-top: 20px;
+  z-index: 1;
+  transition: all 0.2s;
+}
+
+.dotDone  { color: #fff; }
+.dotCurrent { color: inherit; }
+.dotLocked  { color: #d1d5db; }
+
+.connector {
+  width: 2px;
+  flex: 1;
+  min-height: 8px;
+  transition: background 0.3s;
+}
+
+/* ── Course card ──────────────────────────────────────────── */
+.card {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 10px 0 10px 12px;
+  transition: border-color 0.15s, transform 0.1s;
+}
+
+.card:hover { transform: translateX(-2px); }
+.cardDone   { background: #f0fdf4; }
+.cardLocked { opacity: 0.6; }
+
+.cardHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.badge {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+
+.cardMeta {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 12px;
+  color: #6b7280;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.levelPill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  font-weight: 500;
+}
+
+.cardActions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btnDone {
+  padding: 7px 16px;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 600;
+  transition: opacity 0.15s;
+}
+
+.btnDone:hover { opacity: 0.88; }
+
+.btnCert {
+  padding: 7px 16px;
+  background: none;
+  border: 1.5px solid;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 500;
+  transition: opacity 0.15s;
+}
+
+.btnCert:hover { opacity: 0.75; }
+
+.btnLocked {
+  padding: 7px 16px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #9ca3af;
+  cursor: not-allowed;
+  font-family: inherit;
+}
+
+/* ── Track cert section ───────────────────────────────────── */
+.trackCertSection {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.trackCertTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+/* ── General roadmap ──────────────────────────────────────── */
+.generalWrap { display: flex; flex-direction: column; gap: 10px; }
+
+.generalDesc { font-size: 14px; color: #6b7280; margin-bottom: 1rem; }
+
+.genSection {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.genHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: .875rem 1rem;
+  background: #f9fafb;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+  text-align: right;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.genHead:hover { background: #f3f4f6; }
+
+.genBody {
+  padding: .5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.genRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+  flex-wrap: wrap;
+}
+
+.genRow:last-child { border-bottom: none; }
+
+.genDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.genCourseTitle {
+  flex: 1;
+  font-size: 13px;
+  color: #374151;
+  min-width: 140px;
+}
+
+.genDuration { font-size: 12px; color: #9ca3af; white-space: nowrap; }
