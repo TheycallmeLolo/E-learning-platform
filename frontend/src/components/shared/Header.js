@@ -73,6 +73,9 @@ const Header = () => {
           <Link to="/experiences" className={`nav-link ${isActive('/experiences') ? 'active' : ''}`}>
             Experiences 
           </Link>
+          <Link to="/roadmap" className="nav-link">
+          🗺 الـ Roadmap
+          </Link>
           {isAuthenticated && (
             <>
               {user?.is_instructor ? (
@@ -86,6 +89,7 @@ const Header = () => {
               )}
             </>
           )}
+
           {/* إضافة هذا الجزء: يظهر فقط للمدرسين */}
           {isAuthenticated && user?.is_instructor && (
            <Link to="/experiences/create" className={`nav-link ${isActive('/experiences/create') ? 'active' : ''}`}>

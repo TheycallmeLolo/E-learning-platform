@@ -13,6 +13,7 @@ import InstructorDetail   from '../pages/InstructorDetail';
 import SectionExperiences from '../pages/SectionExperiences';
 import CreateExperience   from '../pages/CreateExperience';
 import ExperienceDetail   from '../components/experiences/ExperienceDetail'; // ✅ جديد
+import RoadmapPage from '../pages/RoadmapPage';
 
 import Login               from '../components/auth/Login';
 import Register            from '../components/auth/Register';
@@ -30,6 +31,8 @@ const AppRoutes = () => (
     <Route path="/register"          element={<Register />} />
     <Route path="/instructors"       element={<Instructors />} />
     <Route path="/instructors/:id"   element={<InstructorDetail />} />
+    <Route path="/roadmap"            element={<RoadmapPage />} />
+    
 
     {/* Experiences */}
     <Route path="/experiences"         element={<SectionExperiences />} />
