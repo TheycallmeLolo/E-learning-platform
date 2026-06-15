@@ -37,6 +37,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text="الأدمن يوافق على المدرس قبل ما يقدر ينشر"
     )
 
+    magic_token = models.CharField(
+    max_length=100, blank=True, default='',
+    help_text="One-time login token بيتبعت للمدرس بعد الموافقة"
+    )
+
     date_joined = models.DateTimeField(auto_now_add=True)
     updated_at  = models.DateTimeField(auto_now=True)
 

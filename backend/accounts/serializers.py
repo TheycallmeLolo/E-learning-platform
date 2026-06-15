@@ -37,15 +37,25 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+# في serializers.py — استبدل UserSerializer بده
+
 class UserSerializer(serializers.ModelSerializer):
-    full_name = serializers.CharField(source='get_full_name', read_only=True)
+    full_name          = serializers.CharField(source='get_full_name', read_only=True)
+    instructor_profile = serializers.SerializerMethodField()
 
     class Meta:
-        model        = User
-        fields       = ('id', 'email', 'first_name', 'last_name', 'full_name',
-                        'is_instructor', 'date_joined', 'is_active', 'is_staff')
+        model  = User
+        fields = ('id', 'email', 'first_name', 'last_name', 'full_name',
+                  'is_instructor', 'is_approved', 'date_joined', 'is_active',
+                  'is_staff', 'instructor_profile')
         read_only_fields = ('id', 'date_joined', 'is_active')
 
+    def get_instructor_profile(self, obj):
+        # بيرجع id الـ profile بس — خفيف وكافي للـ frontend
+        try:
+            return {'id': str(obj.instructor_profile.id)}
+        except Exception:
+            return None
 
 class StudentProfileSerializer(serializers.ModelSerializer):
     user       = UserSerializer(read_only=True)

@@ -65,19 +65,39 @@ const Register = () => {
       });
       if (instructorData.avatar)  fd.append('avatar',  instructorData.avatar);
       if (instructorData.cv_file) fd.append('cv_file', instructorData.cv_file);
-
-      await updateInstructorProfile(user.id, fd);
-
-      // ✅ مدرس → صفحة انتظار الموافقة
+  
+      const pendingToken = authService.getPendingToken();
+  
+      // ✅ استخدم instructor_profile.id مش user.id
+      const profileId = user?.instructor_profile?.id;
+      if (!profileId) {
+        setError('لم يتم إنشاء ملف المدرس — حاول مرة أخرى');
+        return;
+      }
+  
+      await updateInstructorProfile(profileId, fd, pendingToken);
+  
+      // ✅ امسح الـ tokens بس مش الـ user — عشان pending-approval يعرف إنه مدرس
+      localStorage.removeItem('pending_token');
+      localStorage.removeItem('pending_refresh');
+  
       navigate('/pending-approval');
     } catch (err) {
       const d = err.response?.data;
       setError(typeof d === 'object' ? Object.values(d).flat().join(', ') : 'فشل رفع البيانات');
     } finally { setLoading(false); }
   };
+ 
+// نفس الشيء في handleSkip
+const handleSkip = () => {
+  // ✅ امسح الـ tokens بس مش الـ user
+  localStorage.removeItem('pending_token');
+  localStorage.removeItem('pending_refresh');
+  navigate('/pending-approval');
+};
 
   // لو الخطوة 3 وهو مش مدرس — skip مباشر
-  const handleSkip = () => navigate('/pending-approval');
+  // const handleSkip = () => navigate('/pending-approval');
 
   return (
     <div style={s.page}>

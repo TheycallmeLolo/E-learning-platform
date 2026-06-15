@@ -8,6 +8,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
 from django.core.mail import send_mail
 from django.conf import settings
+import secrets
 
 from .models import StudentProfile, InstructorProfile
 from .serializers import (
@@ -23,7 +24,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
 
     def get_permissions(self):
-        if self.action == 'register':
+        if self.action in ['register', 'magic_login']:
             return [AllowAny()]
         return [IsAuthenticated()]
 
@@ -54,17 +55,18 @@ class UserViewSet(viewsets.ModelViewSet):
             except Exception as e:
                 print(f"[Email Error] {e}")
 
-            # ✅ إشعار الأدمن لو المسجل مدرس
             if user.is_instructor:
                 try:
                     admins = User.objects.filter(is_staff=True).values_list('email', flat=True)
                     if admins:
                         send_mail(
                             subject='طلب تسجيل مدرس جديد',
-                            message=f'يوجد طلب تسجيل جديد من:\n'
-                                    f'الاسم: {user.get_full_name()}\n'
-                                    f'الإيميل: {user.email}\n\n'
-                                    f'يرجى مراجعة الطلب والموافقة عليه.',
+                            message=(
+                                f'يوجد طلب تسجيل جديد من:\n'
+                                f'الاسم: {user.get_full_name()}\n'
+                                f'الإيميل: {user.email}\n\n'
+                                f'يرجى مراجعة الطلب والموافقة عليه من لوحة التحكم.'
+                            ),
                             from_email=settings.DEFAULT_FROM_EMAIL,
                             recipient_list=list(admins),
                             fail_silently=True,
@@ -73,19 +75,42 @@ class UserViewSet(viewsets.ModelViewSet):
                     print(f"[Email Error] admin notification: {e}")
 
             return Response({
-                'user'     : UserSerializer(user).data,
-                'refresh'  : str(refresh),
-                'access'   : str(refresh.access_token),
+                'user'            : UserSerializer(user).data,
+                'refresh'         : str(refresh),
+                'access'          : str(refresh.access_token),
                 'pending_approval': user.is_instructor and not user.is_approved,
             }, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # ✅ Magic Login — المدرس يدخل بالـ token الموجود في الإيميل
+    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    def magic_login(self, request):
+        token = request.data.get('token')
+        if not token:
+            return Response({'detail': 'Token مطلوب'}, status=400)
+
+        try:
+            user = User.objects.get(magic_token=token, is_approved=True)
+        except User.DoesNotExist:
+            return Response({'detail': 'الرابط غير صالح أو منتهي الصلاحية'}, status=400)
+
+        # امسح الـ token بعد الاستخدام (one-time use)
+        user.magic_token = ''
+        user.save(update_fields=['magic_token'])
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            'user'   : UserDetailSerializer(user, context={'request': request}).data,
+            'refresh': str(refresh),
+            'access' : str(refresh.access_token),
+        })
 
     @action(detail=False, methods=['post'])
     def become_instructor(self, request):
         if request.user.is_instructor:
             return Response({'error': 'User is already an instructor'}, status=400)
         request.user.is_instructor = True
-        request.user.is_approved   = False   # ينتظر موافقة
+        request.user.is_approved   = False
         request.user.save()
         if not hasattr(request.user, 'instructor_profile'):
             InstructorProfile.objects.create(user=request.user)
@@ -98,7 +123,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 # ── Pending instructors ───────────────────────────────────────────────────────
 class PendingInstructorsAdminView(ListAPIView):
-    """GET /api/accounts/admin/pending-instructors/ — قائمة المدرسين المنتظرين"""
     serializer_class   = UserDetailSerializer
     permission_classes = [IsAdminUser]
 
@@ -110,10 +134,6 @@ class PendingInstructorsAdminView(ListAPIView):
 
 # ── Approve / Reject instructor ───────────────────────────────────────────────
 class ApproveInstructorAdminView(viewsets.ViewSet):
-    """
-    POST /api/accounts/admin/instructors/:id/approve/
-    POST /api/accounts/admin/instructors/:id/reject/
-    """
     permission_classes = [IsAdminUser]
 
     @action(detail=True, methods=['post'])
@@ -123,21 +143,34 @@ class ApproveInstructorAdminView(viewsets.ViewSet):
         except User.DoesNotExist:
             return Response({'detail': 'مدرس غير موجود'}, status=404)
 
+        # ✅ وافق على الحساب وولّد magic token
         user.is_approved = True
-        user.save()
+        magic_token      = secrets.token_urlsafe(48)
+        user.magic_token = magic_token
+        user.save(update_fields=['is_approved', 'magic_token'])
+
+        # ✅ رابط الدخول المباشر
+        frontend_url = getattr(settings, 'FRONTEND_URL', 'http://localhost:3000')
+        login_link   = f"{frontend_url}/magic-login?token={magic_token}"
 
         try:
             send_mail(
-                subject='تم قبول طلبك كمدرّس! 🎉',
-                message=f'مرحباً {user.get_full_name()}،\n\n'
-                        f'تم قبول طلبك كمدرّس على المنصة.\n'
-                        f'يمكنك الآن إنشاء الكورسات والتجارب.',
+                subject='تم قبول طلبك كمدرّس — مرحباً بك! 🎉',
+                message=(
+                    f'مرحباً {user.get_full_name()}،\n\n'
+                    f'يسعدنا إعلامك بأنه تم تفعيل حسابك كمدرّس على منصتنا التعليمية.\n\n'
+                    f'اضغط على الرابط التالي للدخول مباشرةً إلى حسابك:\n'
+                    f'{login_link}\n\n'
+                    f'ملاحظة: هذا الرابط للاستخدام مرة واحدة فقط.\n'
+                    f'بعد الدخول يمكنك إنشاء الكورسات والتجارب التعليمية.\n\n'
+                    f'أهلاً وسهلاً بك في عائلتنا 🎓'
+                ),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
-                fail_silently=True,
+                fail_silently=False,
             )
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[Email Error] {e}")
 
         return Response({
             'message'    : f'تم قبول {user.get_full_name()} كمدرّس ✅',
@@ -151,29 +184,31 @@ class ApproveInstructorAdminView(viewsets.ViewSet):
         except User.DoesNotExist:
             return Response({'detail': 'مدرس غير موجود'}, status=404)
 
-        reason = request.data.get('reason', '')
+        reason             = request.data.get('reason', '')
         user.is_approved   = False
-        user.is_instructor = False   # إلغاء صفة المدرس
+        user.is_instructor = False
         user.save()
 
         try:
             send_mail(
                 subject='بخصوص طلب التسجيل كمدرّس',
-                message=f'مرحباً {user.get_full_name()}،\n\n'
-                        f'نأسف، لم يتم قبول طلبك كمدرّس حالياً.\n'
-                        + (f'السبب: {reason}\n' if reason else '')
-                        + f'\nيمكنك التواصل معنا لمزيد من المعلومات.',
+                message=(
+                    f'مرحباً {user.get_full_name()}،\n\n'
+                    f'نأسف، لم يتم قبول طلبك كمدرّس حالياً.\n'
+                    + (f'السبب: {reason}\n' if reason else '')
+                    + f'\nيمكنك التواصل معنا لمزيد من المعلومات.'
+                ),
                 from_email=settings.DEFAULT_FROM_EMAIL,
                 recipient_list=[user.email],
                 fail_silently=True,
             )
-        except Exception:
-            pass
+        except Exception as e:
+            print(f"[Email Error] {e}")
 
         return Response({'message': 'تم رفض الطلب'})
 
 
-# ── Profile ViewSets (unchanged) ──────────────────────────────────────────────
+# ── Profile ViewSets ──────────────────────────────────────────────────────────
 class StudentProfileViewSet(viewsets.ModelViewSet):
     queryset           = StudentProfile.objects.select_related('user').all()
     serializer_class   = StudentProfileSerializer
@@ -211,6 +246,6 @@ class InstructorProfileViewSet(viewsets.ModelViewSet):
             serializer.save(user=self.request.user)
         else:
             serializer.save()
-    
+
     def get_serializer_context(self):
         return {'request': self.request}

@@ -10,7 +10,11 @@ export const getInstructorById = (id) =>
 export const getInstructorCourses = (userId) =>
   api.get(`/courses/?instructor=${userId}`);
 
-export const updateInstructorProfile = (id, formData) =>
-  api.patch(`/accounts/instructor-profiles/${id}/`, formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
-  });
+// ✅ pendingToken اختياري — بيُستخدم في Step 3 تسجيل المدرس قبل موافقة الأدمن
+export const updateInstructorProfile = (id, formData, pendingToken = null) => {
+  const headers = { 'Content-Type': 'multipart/form-data' };
+  if (pendingToken) {
+    headers['Authorization'] = `Bearer ${pendingToken}`;
+  }
+  return api.patch(`/accounts/instructor-profiles/${id}/`, formData, { headers });
+};

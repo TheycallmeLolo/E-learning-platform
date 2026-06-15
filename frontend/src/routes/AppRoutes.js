@@ -20,6 +20,8 @@ import Register            from '../components/auth/Register';
 import CourseDetail        from '../components/courses/CourseDetail';
 import StudentDashboard    from '../components/dashboard/StudentDashboard';
 import InstructorDashboard from '../components/dashboard/InstructorDashboard';
+import MagicLogin from '../pages/MagicLogin.jsx';
+import PendingInstructors from '../pages/admin/PendingInstructors.jsx';
 
 const AppRoutes = () => (
   <Routes>
@@ -32,7 +34,8 @@ const AppRoutes = () => (
     <Route path="/instructors"       element={<Instructors />} />
     <Route path="/instructors/:id"   element={<InstructorDetail />} />
     <Route path="/roadmap"            element={<RoadmapPage />} />
-    
+    <Route path="/magic-login" element={<MagicLogin />} />
+    <Route path="/admin/pending-instructors" element={<PendingInstructors />} />
 
     {/* Experiences */}
     <Route path="/experiences"         element={<SectionExperiences />} />
