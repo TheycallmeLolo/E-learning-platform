@@ -37,6 +37,13 @@ const VideoPlayer = ({ lecture, onPlayStateChange }) => {
     }
   }, [lecture?.id]);
 
+  // للـ iframe videos — notify playing on mount
+  useEffect(() => {
+    if (!lecture || lecture.video_type === 'upload') return;
+    onPlayStateChange?.(true);
+    return () => onPlayStateChange?.(false);
+  }, [lecture?.video_type]);
+
   // Track play/pause on native <video>
   const handlePlay  = useCallback(() => onPlayStateChange?.(true),  [onPlayStateChange]);
   const handlePause = useCallback(() => onPlayStateChange?.(false), [onPlayStateChange]);
@@ -74,7 +81,6 @@ const VideoPlayer = ({ lecture, onPlayStateChange }) => {
   }
 
   const embedUrl = getEmbedUrl(lecture.video_url);
-  useEffect(() => { onPlayStateChange?.(true); return () => onPlayStateChange?.(false); }, []);
   if (!embedUrl) return (
     <div style={vp.placeholder}>
       <span style={{ fontSize:40 }}>⚠️</span>
