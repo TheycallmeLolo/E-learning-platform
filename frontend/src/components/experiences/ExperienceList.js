@@ -1,5 +1,5 @@
 // src/components/experiences/ExperienceList.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { experiencesService } from '../../services/experiences';
 import ExperienceCard from './ExperienceCard';
 
@@ -10,9 +10,9 @@ const ExperienceList = ({ filters = {} }) => {
   const [pagination, setPagination] = useState({ count:0, next:null, previous:null });
   const [page, setPage]           = useState(1);
 
-  useEffect(() => { load(); }, [filters]);
+  useEffect(() => { load(); }, [filters, load]);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     try {
       setLoading(true);
       const params = {
@@ -37,7 +37,7 @@ const ExperienceList = ({ filters = {} }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   const goNext = async () => {
     if (!pagination.next) return;

@@ -1,5 +1,5 @@
 // src/components/CertificateCard.jsx
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { generateCertificate, downloadCertificate } from '../utils/generateCertificate';
 import styles from './CertificateCard.module.css';
 

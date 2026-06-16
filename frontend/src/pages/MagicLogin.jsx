@@ -24,7 +24,7 @@ export default function MagicLogin() {
         setTimeout(() => navigate('/dashboard/instructor'), 2000);
       })
       .catch(() => setStatus('error'));
-  }, []);
+  }, [navigate, searchParams]);
 
   return (
     <div style={s.page}>

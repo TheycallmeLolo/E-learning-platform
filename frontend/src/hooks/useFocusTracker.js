@@ -25,6 +25,7 @@ export function useFocusTracker({
   config      = {},
 } = {}) {
   const cfg = { ...DEFAULT_CONFIG, ...config };
+  const { idleSeconds, warningBeforeStop, alarmVolume, alarmFrequency, alarmBeeps } = cfg;
 
   // ── State ──────────────────────────────────────────────────────────────────
   const [isDistracted, setIsDistracted]     = useState(false);
@@ -54,29 +55,28 @@ export function useFocusTracker({
   const playAlarm = useCallback(() => {
     try {
       const ctx  = getAudioCtx();
-      const beep = (delay, freq = cfg.alarmFrequency) => {
+      const beep = (delay, freq = alarmFrequency) => {
         const osc   = ctx.createOscillator();
         const gain  = ctx.createGain();
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.type      = 'sine';
         osc.frequency.value = freq;
-        gain.gain.value     = cfg.alarmVolume;
+        gain.gain.value     = alarmVolume;
         osc.start(ctx.currentTime + delay);
         osc.stop (ctx.currentTime + delay + 0.25);
-        // Fade out
         gain.gain.exponentialRampToValueAtTime(
           0.001, ctx.currentTime + delay + 0.25
         );
       };
-      for (let i = 0; i < cfg.alarmBeeps; i++) {
+      for (let i = 0; i < alarmBeeps; i++) {
         beep(i * 0.35);
-        beep(i * 0.35 + 0.12, cfg.alarmFrequency * 1.25);
+        beep(i * 0.35 + 0.12, alarmFrequency * 1.25);
       }
     } catch (e) {
       console.warn('Audio alarm failed:', e);
     }
-  }, [cfg, getAudioCtx]);
+  }, [alarmBeeps, alarmFrequency, alarmVolume, getAudioCtx]);
 
   // ── Mark distracted ────────────────────────────────────────────────────────
   const markDistracted = useCallback((reason = 'idle') => {
@@ -96,7 +96,7 @@ export function useFocusTracker({
     onPause?.();
 
     // عداد تنازلي في الـ warning overlay
-    let countdown = cfg.warningBeforeStop;
+    let countdown = warningBeforeStop;
     setWarnCountdown(countdown);
     warnTimer.current = setInterval(() => {
       countdown -= 1;
@@ -106,7 +106,7 @@ export function useFocusTracker({
         setWarnCountdown(null);
       }
     }, 1000);
-  }, [cfg, playAlarm, onPause, sessionTime]);
+  }, [warningBeforeStop, playAlarm, onPause, sessionTime]);
 
   // ── Resume focus ───────────────────────────────────────────────────────────
   const resumeFocus = useCallback(() => {
@@ -133,7 +133,7 @@ export function useFocusTracker({
     } else {
       setFeedbackMsg(null);
     }
-  }, [onResume]);
+  }, [onResume, resetIdleTimer]);
 
   // ── Idle timer reset ───────────────────────────────────────────────────────
   const resetIdleTimer = useCallback(() => {
@@ -141,9 +141,9 @@ export function useFocusTracker({
     if (isPlaying && !isDistractedRef.current) {
       idleTimer.current = setTimeout(() => {
         markDistracted('idle');
-      }, cfg.idleSeconds * 1000);
+      }, idleSeconds * 1000);
     }
-  }, [isPlaying, cfg.idleSeconds, markDistracted]);
+  }, [isPlaying, idleSeconds, markDistracted]);
 
   // ── Activity listeners ─────────────────────────────────────────────────────
   useEffect(() => {

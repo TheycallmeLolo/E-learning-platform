@@ -35,14 +35,14 @@ const VideoPlayer = ({ lecture, onPlayStateChange }) => {
     } else {
       setStreamUrl('');
     }
-  }, [lecture?.id]);
+  }, [lecture?.id, lecture?.s3_key, lecture?.video_type]);
 
   // للـ iframe videos — notify playing on mount
   useEffect(() => {
     if (!lecture || lecture.video_type === 'upload') return;
     onPlayStateChange?.(true);
     return () => onPlayStateChange?.(false);
-  }, [lecture?.video_type]);
+  }, [lecture, onPlayStateChange]);
 
   // Track play/pause on native <video>
   const handlePlay  = useCallback(() => onPlayStateChange?.(true),  [onPlayStateChange]);
@@ -127,7 +127,7 @@ const CourseDetail = () => {
   // ── Focus tracking state ────────────────────────────────────────────────
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [showReport,     setShowReport]     = useState(false);
-  const [lastReason,     setLastReason]     = useState('idle');
+  const [lastReason,     _setLastReason]     = useState('idle');
   const [focusEnabled,   setFocusEnabled]   = useState(true); // toggle on/off
 
   const user         = JSON.parse(localStorage.getItem('user') || 'null');
@@ -154,10 +154,10 @@ const CourseDetail = () => {
     distractCount,
     sessionTime,
     warningCountdown,
-    feedbackMsg,
+    feedbackMsg: _feedbackMsg,
     resumeFocus,
     getSessionSummary,
-    dismissFeedback,
+    dismissFeedback: _dismissFeedback,
   } = useFocusTracker({
     isPlaying : focusEnabled && isVideoPlaying && canWatch,
     onPause   : pauseVideo,
