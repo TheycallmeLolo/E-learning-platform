@@ -27,11 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-production')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = False 
+# config('DEBUG', default=True, cast=bool)
 
 # ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
+ALLOWED_HOSTS = ["*"]
+# os.environ.get('ALLOWED_HOSTS', 'localhost').split(',')
 
 # Application definition
 INSTALLED_APPS = [
@@ -55,6 +57,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'notifications',
     'chatbot',
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
@@ -66,6 +69,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = 'e_learning_platform.urls'
@@ -150,7 +156,7 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Media files
 MEDIA_URL = '/media/'
@@ -209,7 +215,8 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_ALL_ORIGINS = True
 # ─── Add these lines to e_learning_platform/settings.py ────────────────────
 #
 # 1. Add 'boto3' to requirements.txt:   pip install boto3
@@ -233,3 +240,4 @@ AWS_S3_CUSTOM_DOMAIN  = f"{AWS_STORAGE_BUCKET_NAME}.s3.{AWS_S3_REGION_NAME}.amaz
 # Videos are stored as PRIVATE objects – access is always via presigned URLs.
 # Do NOT set AWS_DEFAULT_ACL = 'public-read' for the video bucket.
 X_FRAME_OPTIONS = 'SAMEORIGIN'
+
